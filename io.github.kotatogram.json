@@ -150,8 +150,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.1.5",
-                    "commit": "4b0420ba2aaf2c763209334b4ce7ecf062cb0306"
+                    "tag": "k1.1.6",
+                    "commit": "a7abdc5935f00446217a6bb33dc82120b382bd92"
                 }
             ]
         }
