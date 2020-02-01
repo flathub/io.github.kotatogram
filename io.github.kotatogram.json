@@ -139,7 +139,8 @@
             "buildsystem": "cmake-ninja",
             "builddir": true,
             "config-opts": [
-                "-DTDESKTOP_API_TEST=ON",
+                "-DTDESKTOP_API_ID=1096745",
+                "-DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b",
                 "-DDESKTOP_APP_USE_PACKAGED_FONTS=OFF",
                 "-DDESKTOP_APP_USE_PACKAGED_RLOTTIE=OFF",
                 "-DTDESKTOP_USE_PACKAGED_TGVOIP=OFF",
