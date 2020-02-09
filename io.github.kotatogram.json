@@ -50,13 +50,26 @@
             "cleanup": [ "*" ]
         },
         {
+            "name": "gsl",
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DGSL_TEST=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/microsoft/GSL/archive/v2.1.0.tar.gz",
+                    "sha256": "ef73814657b073e1be86c8f7353718771bf4149b482b6cb54f99e79b23ff899d"
+                }
+            ]
+        },
+        {
             "name": "range-v3",
             "buildsystem": "cmake",
             "config-opts": [
-                "-DRANGE_V3_TESTS:BOOL=OFF",
-                "-DRANGE_V3_EXAMPLES:BOOL=OFF",
-                "-DRANGE_V3_PERF:BOOL=OFF",
-                "-DRANGE_V3_DOCS:BOOL=OFF"
+                "-DRANGE_V3_TESTS=OFF",
+                "-DRANGE_V3_EXAMPLES=OFF",
+                "-DRANGE_V3_DOCS=OFF"
             ],
             "sources": [
                 {
@@ -143,8 +156,9 @@
                 "-DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b",
                 "-DDESKTOP_APP_USE_PACKAGED_FONTS=OFF",
                 "-DDESKTOP_APP_USE_PACKAGED_RLOTTIE=OFF",
+                "-DDESKTOP_APP_USE_PACKAGED_EXPECTED=OFF",
+                "-DDESKTOP_APP_USE_PACKAGED_VARIANT=OFF",
                 "-DTDESKTOP_USE_PACKAGED_TGVOIP=OFF",
-                "-DTDESKTOP_DISABLE_GTK_INTEGRATION=ON",
                 "-DTDESKTOP_LAUNCHER_BASENAME=io.github.kotatogram"
             ],
             "sources": [
