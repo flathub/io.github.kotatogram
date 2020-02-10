@@ -1,7 +1,7 @@
 {
     "id": "io.github.kotatogram",
     "runtime": "org.kde.Platform",
-    "runtime-version": "5.13",
+    "runtime-version": "5.14",
     "sdk": "org.kde.Sdk",
     "command": "kotatogram-desktop",
     "rename-icon": "kotatogram",
