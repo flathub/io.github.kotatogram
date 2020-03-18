@@ -12,7 +12,10 @@
                      "--socket=pulseaudio",
                      "--talk-name=org.kde.StatusNotifierWatcher",
                      "--talk-name=org.freedesktop.Notifications",
+                     "--talk-name=org.freedesktop.ScreenSaver",
                      "--talk-name=com.canonical.Unity",
+                     "--talk-name=com.canonical.indicator.application",
+                     "--talk-name=org.ayatana.indicator.application",
                      "--talk-name=org.freedesktop.portal.Fcitx",
                      "--filesystem=xdg-download",
                      "--device=dri" ],
@@ -53,26 +56,15 @@
             "name": "range-v3",
             "buildsystem": "cmake",
             "config-opts": [
-                "-DRANGE_V3_TESTS:BOOL=OFF",
-                "-DRANGE_V3_EXAMPLES:BOOL=OFF",
-                "-DRANGE_V3_PERF:BOOL=OFF",
-                "-DRANGE_V3_DOCS:BOOL=OFF"
+                "-DRANGE_V3_TESTS=OFF",
+                "-DRANGE_V3_EXAMPLES=OFF",
+                "-DRANGE_V3_DOCS=OFF"
             ],
             "sources": [
                 {
                     "type": "archive",
                     "url": "https://github.com/ericniebler/range-v3/archive/0.10.0.tar.gz",
                     "sha256": "5a1cd44e7315d0e8dcb1eee4df6802221456a9d1dbeac53da02ac7bd4ea150cd"
-                }
-            ]
-        },
-        {
-            "name": "enchant",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://github.com/AbiWord/enchant/releases/download/v2.2.7/enchant-2.2.7.tar.gz",
-                    "sha256": "1b22976135812b35cb5b8d21a53ad11d5e7c1426c93f51e7a314a2a42cab3a09"
                 }
             ]
         },
@@ -142,17 +134,19 @@
                 "-DTDESKTOP_API_ID=1096745",
                 "-DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b",
                 "-DDESKTOP_APP_USE_PACKAGED_FONTS=OFF",
+                "-DDESKTOP_APP_USE_PACKAGED_GSL=OFF",
                 "-DDESKTOP_APP_USE_PACKAGED_RLOTTIE=OFF",
+                "-DDESKTOP_APP_USE_PACKAGED_EXPECTED=OFF",
+                "-DDESKTOP_APP_USE_PACKAGED_VARIANT=OFF",
                 "-DTDESKTOP_USE_PACKAGED_TGVOIP=OFF",
-                "-DTDESKTOP_DISABLE_GTK_INTEGRATION=ON",
                 "-DTDESKTOP_LAUNCHER_BASENAME=io.github.kotatogram"
             ],
             "sources": [
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.1.6",
-                    "commit": "a7abdc5935f00446217a6bb33dc82120b382bd92"
+                    "tag": "k1.2",
+                    "commit": "a2ee066fc5b1ce7d2509351a82d5099210ba88fa"
                 }
             ]
         }
