@@ -145,8 +145,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.3.1",
-                    "commit": "08b2e64dfa4bda58f9214aad5e900d706975c122"
+                    "tag": "k1.3.3",
+                    "commit": "8c1f156286c1c5ab311f2be577554d297d1ae4e1"
                 }
             ]
         }
