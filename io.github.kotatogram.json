@@ -68,8 +68,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.3.5",
-                    "commit": "2a83323c7f87ecef66e61ec41a74b8826155331e"
+                    "tag": "k1.3.6",
+                    "commit": "81d12c0e2548371e7c96f4bf5ad944dcff44ac78"
                 }
             ]
         }
