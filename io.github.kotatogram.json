@@ -55,9 +55,6 @@
         },
         {
             "name": "tg_owt",
-            "only-arches": [
-                "x86_64"
-            ],
             "buildsystem": "cmake-ninja",
             "no-make-install": true,
             "build-commands": [
@@ -69,7 +66,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/desktop-app/tg_owt.git",
-                    "commit": "b77bc3a727cb24969eafa4d69a2f396f322f4f6f"
+                    "commit": "a80383535367dd8961f55f960938d943d6975808"
                 }
             ],
             "cleanup": [ "*" ]
