@@ -5,21 +5,27 @@
     "sdk": "org.kde.Sdk",
     "command": "kotatogram-desktop",
     "rename-icon": "kotatogram",
-    "finish-args": [ "--share=ipc",
-                     "--share=network",
-                     "--socket=x11",
-                     "--socket=wayland",
-                     "--socket=pulseaudio",
-                     "--talk-name=org.kde.StatusNotifierWatcher",
-                     "--talk-name=org.freedesktop.Notifications",
-                     "--talk-name=org.freedesktop.ScreenSaver",
-                     "--talk-name=org.gnome.Mutter.IdleMonitor",
-                     "--talk-name=com.canonical.Unity",
-                     "--talk-name=com.canonical.indicator.application",
-                     "--talk-name=org.ayatana.indicator.application",
-                     "--talk-name=org.freedesktop.portal.Fcitx",
-                     "--filesystem=xdg-download",
-                     "--device=all" ],
+    "finish-args": [
+        "--share=ipc",
+        "--share=network",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--device=all",
+        "--own-name=org.mpris.MediaPlayer2.tdesktop",
+        "--talk-name=org.freedesktop.FileManager1",
+        "--talk-name=org.freedesktop.Notifications",
+        "--talk-name=org.freedesktop.ScreenSaver",
+        "--talk-name=org.freedesktop.portal.Fcitx",
+        "--talk-name=org.gnome.Mutter.IdleMonitor",
+        "--talk-name=org.gnome.SettingsDaemon.MediaKeys",
+        "--talk-name=org.kde.StatusNotifierWatcher",
+        "--talk-name=com.canonical.Unity",
+        "--talk-name=com.canonical.indicator.application",
+        "--talk-name=org.ayatana.indicator.application",
+        "--system-talk-name=org.freedesktop.NetworkManager",
+        "--filesystem=xdg-download"
+    ],
     "add-extensions": {
         "org.freedesktop.Platform.ffmpeg-full": {
             "directory": "lib/ffmpeg",
@@ -32,18 +38,32 @@
     "cleanup-commands": [
         "mkdir -p ${FLATPAK_DEST}/lib/ffmpeg"
     ],
-    "cleanup": [ "/cache",
-                 "/man",
-                 "/share/man",
-                 "/lib/systemd",
-                 "/include",
-                 "/lib/pkgconfig",
-                 "/lib/cmake",
-                 "*.la", "*.a"],
+    "build-options": {
+        "cflags": "",
+        "cflags-override": true,
+        "cxxflags": "",
+        "cxxflags-override": true,
+        "ldflags": "-L/app/lib",
+        "ldflags-override": true
+    },
+    "cleanup": [
+        "/cache",
+        "/man",
+        "/share/man",
+        "/lib/systemd",
+        "/include",
+        "/lib/pkgconfig",
+        "/lib/cmake",
+        "*.la",
+        "*.a"
+    ],
     "modules": [
         {
             "name": "yasm",
             "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
             "sources": [
                 {
                     "type": "archive",
@@ -51,36 +71,83 @@
                     "sha256": "3dce6601b495f5b3d45b59f7d2492a340ee7e84b5beca17e48f862502bd5603f"
                 }
             ],
-            "cleanup": [ "*" ]
+            "cleanup": [
+                "*"
+            ]
+        },
+        {
+            "name": "libsigc++",
+            "buildsystem": "meson",
+            "builddir": true,
+            "config-opts": [
+                "-Dvalidation=false",
+                "-Dbuild-examples=false"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.gnome.org/sources/libsigc%2B%2B/2.10/libsigc%2B%2B-2.10.6.tar.xz",
+                    "sha256": "dda176dc4681bda9d5a2ac1bc55273bdd381662b7a6d49e918267d13e8774e1b"
+                }
+            ]
+        },
+        {
+            "name": "glibmm",
+            "buildsystem": "meson",
+            "builddir": true,
+            "config-opts": [
+                "-Dbuild-examples=false"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.gnome.org/sources/glibmm/2.66/glibmm-2.66.0.tar.xz",
+                    "sha256": "9e1db7d43d2e2d4dfa2771354e21a69a6beec7c446b711619cf8c779e13a581e"
+                }
+            ]
+        },
+        {
+            "name": "mozjpeg",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+                "-DCMAKE_INSTALL_DEFAULT_LIBDIR=lib",
+                "-DENABLE_STATIC:BOOL=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/mozilla/mozjpeg/archive/v4.0.1-rc2.tar.gz",
+                    "sha256": "3dbcfd1345315169996d9ba1b71145db04d1fae2b005a9cd828a984957504df0"
+                }
+            ]
         },
         {
             "name": "tg_owt",
             "buildsystem": "cmake-ninja",
-            "no-make-install": true,
-            "build-commands": [
-                "mkdir -p /app/src/tg_owt",
-                "cp -a . /app/src/tg_owt",
-                "sed 's|/run/build|/app/src|g' -i /app/src/tg_owt/tg_owtTargets.cmake"
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+                "-DBUILD_SHARED_LIBS=OFF"
             ],
             "sources": [
                 {
                     "type": "git",
                     "url": "https://github.com/desktop-app/tg_owt.git",
-                    "commit": "a80383535367dd8961f55f960938d943d6975808"
+                    "commit": "7f965710b93c4dadd7e6f1ac739e708694df7929"
                 }
             ],
-            "cleanup": [ "*" ]
+            "cleanup": [
+                "*"
+            ]
         },
         {
             "name": "kotatogram-desktop",
             "buildsystem": "cmake-ninja",
             "builddir": true,
-            "build-options": {
-                "env": {
-                    "tg_owt_DIR": "/app/src/tg_owt"
-                }
-            },
             "config-opts": [
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
                 "-DTDESKTOP_API_ID=1096745",
                 "-DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b",
                 "-DDESKTOP_APP_USE_PACKAGED_LAZY=ON",
@@ -91,8 +158,21 @@
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.3.9",
-                    "commit": "43111207ed3cbd714119ab69d51640a455fb0af7"
+                    "tag": "k1.4",
+                    "commit": "2eabfee52b8776401a062b16c74d81ee3ba7f840",
+                    "x-checker-data": {
+                        "type": "json",
+                        "url": "https://api.github.com/repos/kotatogram/kotatogram-desktop/releases",
+                        "tag-query": "first | .tag_name",
+                        "timestamp-query": "first | .published_at",
+                        "version-query": "$tag | sub(\"^[vV]\"; \"\")"
+                    }
+                },
+                {
+                    "type": "patch",
+                    "paths": [
+                        "fix-streaming-part.patch"
+                    ]
                 }
             ]
         }
