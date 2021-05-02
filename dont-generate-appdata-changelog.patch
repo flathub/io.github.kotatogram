@@ -1,0 +1,22 @@
+From bcd24233cb3b73f6febaf4ba66cf596f24b9b609 Mon Sep 17 00:00:00 2001
+From: RadRussianRus <radrussianrus@gmail.com>
+Date: Sat, 1 May 2021 18:04:33 +0300
+Subject: [PATCH] Fix re-writing of changelog [no ci]
+
+---
+ Telegram/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Telegram/CMakeLists.txt b/Telegram/CMakeLists.txt
+index 0e00fcee1..fe177acf6 100644
+--- a/Telegram/CMakeLists.txt
++++ b/Telegram/CMakeLists.txt
+@@ -1389,7 +1389,7 @@ endif()
+ if (LINUX AND DESKTOP_APP_USE_PACKAGED)
+     include(GNUInstallDirs)
+     configure_file("../lib/xdg/kotatogramdesktop.appdata.xml.in" "${CMAKE_CURRENT_BINARY_DIR}/kotatogramdesktop.appdata.xml" @ONLY)
+-    generate_appdata_changelog(Telegram "${CMAKE_SOURCE_DIR}/changelog.txt" "${CMAKE_CURRENT_BINARY_DIR}/kotatogramdesktop.appdata.xml")
++    # generate_appdata_changelog(Telegram "${CMAKE_SOURCE_DIR}/changelog.txt" "${CMAKE_CURRENT_BINARY_DIR}/kotatogramdesktop.appdata.xml")
+     install(TARGETS Telegram RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
+     install(FILES "Resources/art/icon16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "kotatogram.png")
+     install(FILES "Resources/art/icon32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "kotatogram.png")
