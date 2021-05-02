@@ -1,8 +1,8 @@
 {
     "id": "io.github.kotatogram",
-    "runtime": "org.kde.Platform",
-    "runtime-version": "5.15",
-    "sdk": "org.kde.Sdk",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "20.08",
+    "sdk": "org.freedesktop.Sdk",
     "command": "kotatogram-desktop",
     "rename-icon": "kotatogram",
     "finish-args": [
@@ -12,18 +12,16 @@
         "--socket=wayland",
         "--socket=pulseaudio",
         "--device=all",
-        "--own-name=org.mpris.MediaPlayer2.tdesktop",
+        "--own-name=org.mpris.MediaPlayer2.Kotatogram",
         "--talk-name=org.freedesktop.FileManager1",
         "--talk-name=org.freedesktop.Notifications",
         "--talk-name=org.freedesktop.ScreenSaver",
-        "--talk-name=org.freedesktop.portal.Fcitx",
         "--talk-name=org.gnome.Mutter.IdleMonitor",
         "--talk-name=org.gnome.SettingsDaemon.MediaKeys",
         "--talk-name=org.kde.StatusNotifierWatcher",
         "--talk-name=com.canonical.Unity",
         "--talk-name=com.canonical.indicator.application",
         "--talk-name=org.ayatana.indicator.application",
-        "--system-talk-name=org.freedesktop.NetworkManager",
         "--filesystem=xdg-download"
     ],
     "add-extensions": {
@@ -49,11 +47,14 @@
     "cleanup": [
         "/cache",
         "/man",
+        "/doc",
         "/share/man",
         "/lib/systemd",
         "/include",
         "/lib/pkgconfig",
         "/lib/cmake",
+        "/lib/mkspecs",
+        "/lib/*.prl",
         "*.la",
         "*.a"
     ],
@@ -124,6 +125,190 @@
             ]
         },
         {
+            "name": "qtbase",
+            "build-options": {
+                "arch": {
+                    "x86_64": {
+                        "config-opts": [
+                            "-reduce-relocations",
+                            "-force-debug-info"
+                        ]
+                    },
+                    "aarch64": {
+                        "config-opts": [
+                            "-no-reduce-relocations",
+                            "-optimize-size",
+                            "-opengl",
+                            "es2"
+                        ]
+                    }
+                }
+            },
+            "config-opts": [
+                "-archdatadir",
+                "/app/lib/",
+                "-release",
+                "-opensource",
+                "-confirm-license",
+                "-shared",
+                "-no-separate-debug-info",
+                "-no-strip",
+                "-no-rpath",
+                "-optimized-qmake",
+                "-nomake",
+                "examples",
+                "-nomake",
+                "tests",
+                "-system-harfbuzz",
+                "-system-libjpeg",
+                "-system-libpng",
+                "-system-sqlite",
+                "-system-zlib",
+                "-system-proxies",
+                "-dbus-linked",
+                "-openssl-linked",
+                "-fontconfig",
+                "-accessibility",
+                "-glib",
+                "-icu",
+                "-no-directfb",
+                "-no-linuxfb",
+                "-no-kms",
+                "-no-feature-getentropy",
+                "-no-feature-renameat2",
+                "-no-feature-statx"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.qt.io/archive/qt/5.15/5.15.2/submodules/qtbase-everywhere-src-5.15.2.tar.xz",
+                    "sha256": "909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e0f8"
+                },
+                "desktop-app-patches-qtbase_5_15_2.json"
+            ],
+            "cleanup": [
+                "/bin"
+            ]
+        },
+        {
+            "name": "qtwayland",
+            "buildsystem": "qmake",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.qt.io/archive/qt/5.15/5.15.2/submodules/qtwayland-everywhere-src-5.15.2.tar.xz",
+                    "sha256": "193732229ff816f3aaab9a5e2f6bed71ddddbf1988ce003fe8dd84a92ce9aeb5"
+                },
+                "desktop-app-patches-qtwayland_5_15_2.json"
+            ]
+        },
+        {
+            "name": "qtimageformats",
+            "buildsystem": "qmake",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.qt.io/archive/qt/5.15/5.15.2/submodules/qtimageformats-everywhere-src-5.15.2.tar.xz",
+                    "sha256": "bf8285c7ce04284527ab823ddc7cf48a1bb79131db3a7127342167f4814253d7"
+                }
+            ]
+        },
+        {
+            "name": "qtsvg",
+            "buildsystem": "qmake",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.qt.io/archive/qt/5.15/5.15.2/submodules/qtsvg-everywhere-src-5.15.2.tar.xz",
+                    "sha256": "8bc3c2c1bc2671e9c67d4205589a8309b57903721ad14c60ea21a5d06acb585e"
+                }
+            ]
+        },
+        {
+            "name": "extra-cmake-modules",
+            "buildsystem": "cmake-ninja",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.kde.org/stable/frameworks/5.81/extra-cmake-modules-5.81.0.tar.xz",
+                    "sha256": "5f57e4b843069b6098d955051bb2913558d1623fead3f3b95b7017d7e1e35b83"
+                }
+            ],
+            "cleanup": [
+                "*"
+            ]
+        },
+        {
+            "name": "plasma-wayland-protocols",
+            "buildsystem": "cmake-ninja",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.kde.org/stable/plasma-wayland-protocols/plasma-wayland-protocols-v1.2.1.tar.xz",
+                    "sha256": "287b90903f9a7f394c75e75cb187426862eaf64a92f1be7e2ef68e99fd8cbaaa"
+                }
+            ],
+            "cleanup": [
+                "*"
+            ]
+        },
+        {
+            "name": "kwayland",
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.kde.org/stable/frameworks/5.81/kwayland-5.81.0.tar.xz",
+                    "sha256": "de22cad7b4ddaebbfc9a9b60cbd7e41c5de5a943c89b46b077a12b651cfb43a8"
+                }
+            ]
+        },
+        {
+            "name": "webkitgtk",
+            "buildsystem": "cmake-ninja",
+            "build-options": {
+                "arch": {
+                    "x86_64": {
+                        "cflags": "-g1",
+                        "cxxflags": "-g1",
+                        "config-opts": [
+                            "-DCMAKE_BUILD_TYPE=Release"
+                        ]
+                    },
+                    "aarch64": {
+                        "config-opts": [
+                            "-DCMAKE_BUILD_TYPE=MinSizeRel"
+                        ]
+                    }
+                }
+            },
+            "config-opts": [
+                "-DPORT=GTK",
+                "-DUSE_LIBNOTIFY=OFF",
+                "-DUSE_LIBSECRET=OFF",
+                "-DUSE_WOFF2=OFF",
+                "-DUSE_WPE_RENDERER=OFF",
+                "-DENABLE_GAMEPAD=OFF",
+                "-DENABLE_SPELLCHECK=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://webkitgtk.org/releases/webkitgtk-2.32.0.tar.xz",
+                    "sha256": "9d7df4dae9ada2394257565acc2a68ace9308c4c61c3fcc00111dc1f11076bf0",
+                    "x-checker-data": {
+                        "type": "html",
+                        "url": "https://webkitgtk.org/releases/",
+                        "version-pattern": "LATEST-STABLE-(\\d[\\.\\d]+\\d)",
+                        "url-template": "https://webkitgtk.org/releases/webkitgtk-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
             "name": "tg_owt",
             "buildsystem": "cmake-ninja",
             "builddir": true,
@@ -158,8 +343,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.4",
-                    "commit": "2eabfee52b8776401a062b16c74d81ee3ba7f840",
+                    "tag": "k1.4.1",
+                    "commit": "4ad36ff657c2c289bf598468a258b0057ad645e9",
                     "x-checker-data": {
                         "type": "json",
                         "url": "https://api.github.com/repos/kotatogram/kotatogram-desktop/releases",
@@ -167,6 +352,10 @@
                         "timestamp-query": "first | .published_at",
                         "version-query": "$tag | sub(\"^[vV]\"; \"\")"
                     }
+                },
+                {
+                    "type": "patch",
+                    "path": "dont-generate-appdata-changelog.patch"
                 }
             ]
         }
