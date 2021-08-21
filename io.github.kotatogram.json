@@ -343,8 +343,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/kotatogram/kotatogram-desktop.git",
-                    "tag": "k1.4.1",
-                    "commit": "4ad36ff657c2c289bf598468a258b0057ad645e9",
+                    "tag": "k1.4.2",
+                    "commit": "43dfd25d5efd2955e1e89466a3987083ad5ae957",
                     "x-checker-data": {
                         "type": "json",
                         "url": "https://api.github.com/repos/kotatogram/kotatogram-desktop/releases",
