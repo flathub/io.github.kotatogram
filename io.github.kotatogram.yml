@@ -290,4 +290,4 @@ modules:
           url: https://api.github.com/repos/kotatogram/kotatogram-desktop/releases
           tag-query: first | .tag_name
           timestamp-query: first | .published_at
-          version-query: $tag | sub("^[vV]"; "")
+          version-query: $tag | sub("^[kK]"; "")
