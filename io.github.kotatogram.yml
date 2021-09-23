@@ -1,6 +1,6 @@
 id: io.github.kotatogram
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: kotatogram-desktop
 rename-icon: kotatogram
@@ -25,11 +25,13 @@ finish-args:
   - --filesystem=xdg-run/pipewire-0
   - --filesystem=host:ro
   - --env=QT_PLUGIN_PATH=/app/lib64/plugins:/app/lib/plugins
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.llvm12
 add-extensions:
   org.freedesktop.Platform.ffmpeg-full:
     directory: lib/ffmpeg
     add-ld-path: .
-    version: '20.08'
+    version: '21.08'
     autodownload: true
     autodelete: false
 cleanup-commands:
@@ -41,6 +43,8 @@ build-options:
   cxxflags-override: true
   ldflags: -L/app/lib
   ldflags-override: true
+  append-path: /usr/lib/sdk/llvm12/bin
+  append-ld-library-path: /usr/lib/sdk/llvm12/lib
 cleanup:
   - /cache
   - /man
@@ -65,15 +69,6 @@ modules:
         sha256: 3dce6601b495f5b3d45b59f7d2492a340ee7e84b5beca17e48f862502bd5603f
     cleanup:
       - '*'
-
-  - name: jemalloc
-    config-opts:
-      - --disable-static
-      - --disable-documentation
-    sources:
-      - type: archive
-        url: https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
-        sha256: 34330e5ce276099e2e8950d9335db5a875689a4c6a56751ef3b1d8c537f887f6
 
   - name: libsigc++
     buildsystem: meson
@@ -109,6 +104,8 @@ modules:
       - type: archive
         url: https://github.com/mozilla/mozjpeg/archive/v4.0.1-rc2.tar.gz
         sha256: 3dbcfd1345315169996d9ba1b71145db04d1fae2b005a9cd828a984957504df0
+    cleanup:
+      - /bin
 
   - name: rnnoise
     config-opts:
@@ -268,7 +265,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/desktop-app/tg_owt.git
-        commit: 91d836dc84a16584c6ac52b36c04c0de504d9c34
+        commit: 575fb17d2853c43329e45f6693370f5e41668055
     cleanup:
       - '*'
 
