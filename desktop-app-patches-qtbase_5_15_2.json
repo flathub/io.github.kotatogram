@@ -35,6 +35,24 @@
         "desktop-app-patches/qtbase_5_15_2/0032-always-use-xft-font-conf.patch",
         "desktop-app-patches/qtbase_5_15_2/0033-get-dpi-from-xsettings.patch",
         "desktop-app-patches/qtbase_5_15_2/0034-Windows-QPA-Fix-missing-QScreen-change-updates.patch",
-        "desktop-app-patches/qtbase_5_15_2/0035-backport-QEventDispatcherWin32-deadlock-fix.patch"
+        "desktop-app-patches/qtbase_5_15_2/0035-backport-QEventDispatcherWin32-deadlock-fix.patch",
+        "desktop-app-patches/qtbase_5_15_2/0036-catch-cocoa-dock-menu.patch",
+        "desktop-app-patches/qtbase_5_15_2/0037-fix-crash-in-QXcbBasicConnection-internAtom.patch",
+        "desktop-app-patches/qtbase_5_15_2/0038-no-dynamic-opengl-es2.patch",
+        "desktop-app-patches/qtbase_5_15_2/0039-fix-build-with-new-angle-headers.patch",
+        "desktop-app-patches/qtbase_5_15_2/0040-env-select-static-angle-backend.patch",
+        "desktop-app-patches/qtbase_5_15_2/0041-fix-open-macos-window-ghost-focused-after-popup.patch",
+        "desktop-app-patches/qtbase_5_15_2/0042-fix-race-in-windows-timers.patch",
+        "desktop-app-patches/qtbase_5_15_2/0043-fix-xcb-clipboard-pasting.patch",
+        "desktop-app-patches/qtbase_5_15_2/0044-use-bgra-texture-format-for-angle.patch",
+        "desktop-app-patches/qtbase_5_15_2/0045-handle-amd_switchable-in-gpu-bugs-list.patch",
+        "desktop-app-patches/qtbase_5_15_2/0046-gtk-as-last-resort.patch",
+        "desktop-app-patches/qtbase_5_15_2/0047-reset-current-context-on-error.patch",
+        "desktop-app-patches/qtbase_5_15_2/0048-reset-opengl-widget-on-context-loss.patch",
+        "desktop-app-patches/qtbase_5_15_2/0049-fallback-in-qxcbglxwindow-createvisual.patch",
+        "desktop-app-patches/qtbase_5_15_2/0050-fix-build-with-gcc-11-limits.patch",
+        "desktop-app-patches/qtbase_5_15_2/0051-fix-build-with-gcc-11.patch",
+        "desktop-app-patches/qtbase_5_15_2/0052-epoxy.patch",
+        "desktop-app-patches/qtbase_5_15_2/0053-optional-glib.patch"
     ]
 }
