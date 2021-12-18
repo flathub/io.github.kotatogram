@@ -281,8 +281,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/kotatogram/kotatogram-desktop.git
-        tag: k1.4.5
-        commit: 70cec7d10494a6c140bbfaabcf9b1ce846a162f8
+        tag: k1.4.6
+        commit: ca7ac81ef637d687217bd2830e381889e4c178d3
         x-checker-data:
           type: json
           url: https://api.github.com/repos/kotatogram/kotatogram-desktop/releases
