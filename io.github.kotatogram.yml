@@ -12,7 +12,6 @@ finish-args:
   - --socket=pulseaudio
   - --device=all
   - --own-name=org.mpris.MediaPlayer2.Kotatogram
-  - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.ScreenSaver
   - --talk-name=org.gnome.Mutter.IdleMonitor
@@ -75,6 +74,52 @@ modules:
           url-template: https://www.tortall.net/projects/yasm/releases/yasm-$version.tar.gz
     cleanup:
       - '*'
+
+  - name: jinja2
+    buildsystem: simple
+    build-commands:
+      - pip3 install --exists-action=i --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}
+        "Jinja2" --no-build-isolation
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/62/0f/52c009332fdadd484e898dc8f2acca0663c1031b3517070fd34ad9c1b64e/MarkupSafe-2.1.0.tar.gz
+        sha256: 80beaf63ddfbc64a0452b841d8036ca0611e049650e20afcb882f5d3c266d65f
+        x-checker-data:
+          type: pypi
+          name: MarkupSafe
+      - type: file
+        url: https://files.pythonhosted.org/packages/91/a5/429efc6246119e1e3fbf562c00187d04e83e54619249eb732bb423efa6c6/Jinja2-3.0.3.tar.gz
+        sha256: 611bb273cd68f3b993fabdc4064fc858c5b47a973cb5aa7999ec1ba405c87cd7
+        x-checker-data:
+          type: pypi
+          name: Jinja2
+    cleanup:
+      - '*'
+
+  - name: systemd
+    buildsystem: meson
+    builddir: true
+    config-opts:
+      - --buildtype=debugoptimized
+      - -Drootprefix=/app
+    make-args:
+      - systemd-detect-virt
+    no-make-install: true
+    post-install:
+      - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
+    sources:
+      - type: archive
+        url: https://github.com/systemd/systemd/archive/v250/systemd-250.tar.gz
+        sha256: 389935dea020caf6e2e81a4e90e556bd5599a2086861045efdc06197776e94e1
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/systemd/systemd/releases/latest
+          tag-query: .tag_name
+          timestamp-query: .published_at
+          version-query: $tag | sub("^[vV]"; "")
+          url-query: '"https://github.com/systemd/systemd/archive/\($tag)/systemd-\($version).tar.gz"'
+      - type: patch
+        path: desktop-app-patches/systemd.patch
 
   - name: libepoxy
     buildsystem: meson
@@ -168,10 +213,8 @@ modules:
           config-opts:
             - -force-debug-info
         aarch64:
-          cflags: ''
-          cflags-override: true
-          cxxflags: ''
-          cxxflags-override: true
+          cflags: -g0
+          cxxflags: -g0
     config-opts:
       - -archdatadir
       - /app/lib/
@@ -190,9 +233,9 @@ modules:
       - tests
     sources:
       - type: archive
-        url: https://download.qt.io/archive/qt/6.2/6.2.0/submodules/qtbase-everywhere-src-6.2.0.tar.xz
-        sha256: fdfff0716d093bcb6bcd53746ce1d3c9701a6bf3326d47813866d43949b47769
-      - desktop-app-patches-qtbase_6_2_0.json
+        url: https://download.qt.io/archive/qt/6.2/6.2.3/submodules/qtbase-everywhere-src-6.2.3.tar.xz
+        sha256: 34d6d0072e197241463c417ad72610c3d44e2efd6062868e9a95283103d75df4
+      - desktop-app-patches-qtbase_6_2_3.json
     cleanup:
       - /bin
       - /lib/plugins/platformthemes/libqxdgdesktopportal.so
@@ -201,11 +244,12 @@ modules:
     buildsystem: cmake-ninja
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DINPUT_egl_extension_platform_wayland=no
     sources:
       - type: archive
-        url: https://download.qt.io/archive/qt/6.2/6.2.0/submodules/qtwayland-everywhere-src-6.2.0.tar.xz
-        sha256: d6787fce74bde1a3386bcbe43c078c712471bab09f1946c40fc2327232d27d4c
-      - desktop-app-patches-qtwayland_6_2_0.json
+        url: https://download.qt.io/archive/qt/6.2/6.2.3/submodules/qtwayland-everywhere-src-6.2.3.tar.xz
+        sha256: 48fdc52b1241d35532a24beebf5856d78eadc0f1f88a0a48b51a51e279c4ce72
+      - desktop-app-patches-qtwayland_6_2_3.json
     cleanup:
       - /bin
 
@@ -215,8 +259,8 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
     sources:
       - type: archive
-        url: https://download.qt.io/archive/qt/6.2/6.2.0/submodules/qtimageformats-everywhere-src-6.2.0.tar.xz
-        sha256: fdaa35536c3d0f8f5f313d0d52dedfbf6d8fcd81a82d6a56f473253f135072ad
+        url: https://download.qt.io/archive/qt/6.2/6.2.3/submodules/qtimageformats-everywhere-src-6.2.3.tar.xz
+        sha256: 9150bce23e6002e3c08229222142374b24db91132e1ff5c05bce028fc8fc0af6
 
   - name: qtsvg
     buildsystem: cmake-ninja
@@ -224,8 +268,8 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
     sources:
       - type: archive
-        url: https://download.qt.io/archive/qt/6.2/6.2.0/submodules/qtsvg-everywhere-src-6.2.0.tar.xz
-        sha256: af9eabefbb0dcb772f18fae4d2c39bcc23579a5dfff569c35ea7e497591db3d4
+        url: https://download.qt.io/archive/qt/6.2/6.2.3/submodules/qtsvg-everywhere-src-6.2.3.tar.xz
+        sha256: 4a6bc9eeafa231ee9516f0fe84ddb0fbe8fba94844f4e7bd34c381e01610e2ee
 
   - name: qt5compat
     buildsystem: cmake-ninja
@@ -233,65 +277,19 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
     sources:
       - type: archive
-        url: https://download.qt.io/archive/qt/6.2/6.2.0/submodules/qt5compat-everywhere-src-6.2.0.tar.xz
-        sha256: c2e2f058ecee36a96c1b15937badeda9b7b03eb5278fa01af4ff386c4f1854fb
-      - desktop-app-patches-qt5compat_6_2_0.json
-
-  - name: extra-cmake-modules
-    buildsystem: cmake-ninja
-    sources:
-      - type: git
-        url: https://invent.kde.org/frameworks/extra-cmake-modules.git
-        tag: v5.90.0
-        commit: 29a243a9c12e1f9fdcabcae7fb8c4ab091d1ed68
-        x-checker-data:
-          type: git
-          tag-pattern: ^v([\d.]+)$
-    cleanup:
-      - '*'
-
-  - name: plasma-wayland-protocols
-    buildsystem: cmake-ninja
-    sources:
-      - type: git
-        url: https://invent.kde.org/libraries/plasma-wayland-protocols.git
-        tag: v1.6.0
-        commit: 64b9d6adb1472360f2ee492193f6df6a37bcf036
-        x-checker-data:
-          type: git
-          tag-pattern: ^v([\d.]+)$
-    cleanup:
-      - '*'
-
-  - name: kwayland
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-      - -DBUILD_TESTING=OFF
-    sources:
-      - type: git
-        url: https://invent.kde.org/frameworks/kwayland.git
-        tag: v5.90.0
-        commit: 4dfc49ff85f0de23c254dd0832645e924e19c4a6
-        x-checker-data:
-          type: git
-          tag-pattern: ^v([\d.]+)$
-      - type: patch
-        path: desktop-app-patches/kwayland-qt6.patch
-    cleanup:
-      - /lib/libexec
+        url: https://download.qt.io/archive/qt/6.2/6.2.3/submodules/qt5compat-everywhere-src-6.2.3.tar.xz
+        sha256: 1cf89198cf2cf8a5c15336ccd69fa1f39b779feb64117d6bbf5509c21c123f53
+      - desktop-app-patches-qt5compat_6_2_3.json
 
   - name: tg_owt
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-      - -DBUILD_SHARED_LIBS=OFF
-      - -DTG_OWT_BUILD_AUDIO_BACKENDS=OFF
     sources:
       - type: git
         url: https://github.com/desktop-app/tg_owt.git
-        commit: b02478677baac6d563589f216800ff9cea0fd65c
+        commit: db7d4697aba4aeb51369e25cc9f8f4b3a2bbb8e7
     cleanup:
       - '*'
 
@@ -315,3 +313,5 @@ modules:
           tag-query: first | .tag_name
           timestamp-query: first | .published_at
           version-query: $tag | sub("^[kK]"; "")
+      - type: patch
+        path: dispatch-no-werror.patch
