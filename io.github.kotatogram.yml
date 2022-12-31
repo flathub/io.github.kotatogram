@@ -109,8 +109,8 @@ modules:
       - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
     sources:
       - type: archive
-        url: https://github.com/systemd/systemd/archive/v251/systemd-251.tar.gz
-        sha256: 0ecc8bb28d3062c8e58a64699a9b16534554bb6a01efb8d5507c893db39f8d51
+        url: https://github.com/systemd/systemd/archive/v252/systemd-252.tar.gz
+        sha256: 113a9342ddf89618a17c4056c2dd72c4b20b28af8da135786d7e9b4f1d18acfb
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
@@ -151,8 +151,8 @@ modules:
       - -Dbuild-examples=false
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/libsigc++/2.10/libsigc++-2.10.8.tar.xz
-        sha256: 235a40bec7346c7b82b6a8caae0456353dc06e71f14bc414bcc858af1838719a
+        url: https://download.gnome.org/sources/libsigc++/2.12/libsigc++-2.12.0.tar.xz
+        sha256: 1c466d2e64b34f9b118976eb21b138c37ed124d0f61497df2a90ce6c3d9fa3b5
         x-checker-data:
           type: gnome
           name: libsigc++
@@ -184,8 +184,8 @@ modules:
       - -DENABLE_STATIC:BOOL=OFF
     sources:
       - type: archive
-        url: https://github.com/mozilla/mozjpeg/archive/v4.1.1/mozjpeg-4.1.1.tar.gz
-        sha256: 66b1b8d6b55d263f35f27f55acaaa3234df2a401232de99b6d099e2bb0a9d196
+        url: https://github.com/mozilla/mozjpeg/archive/v4.0.3/mozjpeg-4.0.3.tar.gz
+        sha256: 4f22731db2afa14531a5bf2633d8af79ca5cb697a550f678bf43f24e5e409ef0
         x-checker-data:
           type: json
           url: https://api.github.com/repos/mozilla/mozjpeg/releases/latest
