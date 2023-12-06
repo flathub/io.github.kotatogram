@@ -109,8 +109,8 @@ modules:
       - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
     sources:
       - type: archive
-        url: https://github.com/systemd/systemd/archive/v253/systemd-253.tar.gz
-        sha256: acbd86d42ebc2b443722cb469ad215a140f504689c7a9133ecf91b235275a491
+        url: https://github.com/systemd/systemd/archive/v255/systemd-255.tar.gz
+        sha256: 28854ffb2cb5f9e07fcbdbaf1e03a80b3462a12edeef84893ca2f37b22e4491e
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
@@ -153,8 +153,8 @@ modules:
       - -Dbuild-examples=false
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/libsigc++/2.12/libsigc++-2.12.0.tar.xz
-        sha256: 1c466d2e64b34f9b118976eb21b138c37ed124d0f61497df2a90ce6c3d9fa3b5
+        url: https://download.gnome.org/sources/libsigc++/2.12/libsigc++-2.12.1.tar.xz
+        sha256: a9dbee323351d109b7aee074a9cb89ca3e7bcf8ad8edef1851f4cf359bd50843
         x-checker-data:
           type: gnome
           name: libsigc++
