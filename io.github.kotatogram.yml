@@ -154,8 +154,8 @@ modules:
       - -DFMT_TEST=OFF
     sources:
       - type: archive
-        url: https://github.com/fmtlib/fmt/releases/download/10.2.1/fmt-10.2.1.zip
-        sha256: 312151a2d13c8327f5c9c586ac6cf7cddc1658e8f53edae0ec56509c8fa516c9
+        url: https://github.com/fmtlib/fmt/releases/download/11.0.0/fmt-11.0.0.zip
+        sha256: 583ce480ef07fad76ef86e1e2a639fc231c3daa86c4aa6bcba524ce908f30699
         x-checker-data:
           type: json
           url: https://api.github.com/repos/fmtlib/fmt/releases/latest
@@ -341,8 +341,8 @@ modules:
           type: pypi
           name: flit-core
       - type: file
-        url: https://files.pythonhosted.org/packages/ee/b5/b43a27ac7472e1818c4bafd44430e69605baefe1f34440593e0332ec8b4d/packaging-24.0.tar.gz
-        sha256: eb82c5e3e56209074766e6885bb04b8c38a0c015d0a30036ebe7ece34c9989e9
+        url: https://files.pythonhosted.org/packages/51/65/50db4dda066951078f0a96cf12f4b9ada6e4b811516bf0262c0f4f7064d4/packaging-24.1.tar.gz
+        sha256: 026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002
         x-checker-data:
           type: pypi
           name: packaging
@@ -357,8 +357,8 @@ modules:
       - -Dtests=false
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/glib/2.80/glib-2.80.0.tar.xz
-        sha256: 8228a92f92a412160b139ae68b6345bd28f24434a7b5af150ebe21ff587a561d
+        url: https://download.gnome.org/sources/glib/2.80/glib-2.80.3.tar.xz
+        sha256: 3947a0eaddd0f3613d0230bb246d0c69e46142c19022f5c4b1b2e3cba236d417
         x-checker-data:
           type: gnome
           name: glib
@@ -373,8 +373,8 @@ modules:
       - -Dbuild-examples=false
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/glibmm/2.78/glibmm-2.78.1.tar.xz
-        sha256: f473f2975d26c3409e112ed11ed36406fb3843fa975df575c22d4cb843085f61
+        url: https://download.gnome.org/sources/glibmm/2.80/glibmm-2.80.0.tar.xz
+        sha256: 539b0a29e15a96676c4f0594541250566c5ca44da5d4d87a3732fa2d07909e4a
         x-checker-data:
           type: gnome
           name: glibmm
@@ -493,7 +493,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/desktop-app/tg_owt.git
-        commit: c9cc4390ab951f2cbc103ff783a11f398b27660b
+        commit: 3bb3d757681e6cc5135aec6529a753dc3dcdcfb9
         x-checker-data:
           type: json
           parent-id: kotatogram-desktop-git-0
