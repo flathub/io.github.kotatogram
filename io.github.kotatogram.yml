@@ -529,6 +529,7 @@ modules:
       - type: git
         url: https://github.com/kotatogram/kotatogram-desktop.git
         commit: 4ad3714bb80bfc54bda46475aba6e5e7e2452bbd
+        disable-shallow-clone: true
         x-checker-data:
           type: json
           url: https://api.github.com/repos/kotatogram/kotatogram-desktop/releases
