@@ -531,11 +531,8 @@ modules:
         commit: fbb22ebd3e39dfa4a036fa79a7a3f78b86b1cea2
         disable-shallow-clone: true
         x-checker-data:
-          type: json
-          url: https://api.github.com/repos/kotatogram/kotatogram-desktop/releases
-          tag-query: first | .tag_name
-          timestamp-query: first | .published_at
-          version-query: $tag | sub("^[kK]"; "")
+          type: git
+          tag-pattern: ^k([\\d.]+)$
           versions:
             '>': 1.4.9
       - type: shell
