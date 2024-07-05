@@ -115,8 +115,8 @@ modules:
       - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
     sources:
       - type: archive
-        url: https://github.com/systemd/systemd/archive/v256.1/systemd-256.1.tar.gz
-        sha256: 9c9243209e5b1bf429fc213ade6111a95769531a3a741bdf01c8a5dbeeab9f8a
+        url: https://github.com/systemd/systemd/archive/v256.2/systemd-256.2.tar.gz
+        sha256: 81ed336d36e48b1f31b876540f437755f33c7c389ba6e8efb8d3512129f0096d
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
@@ -154,8 +154,8 @@ modules:
       - -DFMT_TEST=OFF
     sources:
       - type: archive
-        url: https://github.com/fmtlib/fmt/releases/download/11.0.0/fmt-11.0.0.zip
-        sha256: 583ce480ef07fad76ef86e1e2a639fc231c3daa86c4aa6bcba524ce908f30699
+        url: https://github.com/fmtlib/fmt/releases/download/11.0.1/fmt-11.0.1.zip
+        sha256: 62ca45531814109b5d6cef0cf2fd17db92c32a30dd23012976e768c685534814
         x-checker-data:
           type: json
           url: https://api.github.com/repos/fmtlib/fmt/releases/latest
