@@ -27,6 +27,7 @@
         "desktop-app-patches/qtbase_6.7.2/0024-portal-proxy-resolver.patch",
         "desktop-app-patches/qtbase_6.7.2/0025-fix-focus-in-hidden-window.patch",
         "desktop-app-patches/qtbase_6.7.2/0026-fix-only-emoji-line.patch",
-        "desktop-app-patches/qtbase_6.7.2/0027-fix-rtl-cursor-move-up.patch"
+        "desktop-app-patches/qtbase_6.7.2/0027-fix-rtl-cursor-move-up.patch",
+        "desktop-app-patches/qtbase_6.7.2/0028-xcb-provide-xkb-state.patch"
     ]
 }
