@@ -145,25 +145,6 @@ modules:
           stable-only: true
           url-template: https://boostorg.jfrog.io/artifactory/main/release/$version/source/boost_${major}_${minor}_${patch}.tar.bz2
 
-  - name: fmt
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DFMT_DOC=OFF
-      - -DFMT_TEST=OFF
-    sources:
-      - type: archive
-        url: https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip
-        sha256: 40fc58bebcf38c759e11a7bd8fdc163507d2423ef5058bba7f26280c5b9c5465
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/fmtlib/fmt/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag
-          url-query: '"https://github.com/fmtlib/fmt/releases/download/\($tag)/fmt-\($version).zip"'
-
   - name: protobuf
     buildsystem: cmake-ninja
     builddir: true
@@ -311,74 +292,6 @@ modules:
       - type: patch
         paths:
           - desktop-app-patches/libjxl.patch
-
-  - name: libsigc++
-    buildsystem: meson
-    builddir: true
-    config-opts:
-      - --buildtype=plain
-      - -Dbuild-examples=false
-      - -Dvalidation=false
-    sources:
-      - type: archive
-        url: https://download.gnome.org/sources/libsigc++/3.6/libsigc++-3.6.0.tar.xz
-        sha256: c3d23b37dfd6e39f2e09f091b77b1541fbfa17c4f0b6bf5c89baef7229080e17
-        x-checker-data:
-          type: gnome
-          name: libsigc++
-
-  - name: packaging
-    buildsystem: simple
-    build-commands:
-      - pip3 install --exists-action=i --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}
-        flit-core --no-build-isolation
-      - pip3 install --exists-action=i --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}
-        packaging --no-build-isolation
-    sources:
-      - type: file
-        url: https://files.pythonhosted.org/packages/c4/e6/c1ac50fe3eebb38a155155711e6e864e254ce4b6e17fe2429b4c4d5b9e80/flit_core-3.9.0.tar.gz
-        sha256: 72ad266176c4a3fcfab5f2930d76896059851240570ce9a98733b658cb786eba
-        x-checker-data:
-          type: pypi
-          name: flit-core
-      - type: file
-        url: https://files.pythonhosted.org/packages/51/65/50db4dda066951078f0a96cf12f4b9ada6e4b811516bf0262c0f4f7064d4/packaging-24.1.tar.gz
-        sha256: 026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002
-        x-checker-data:
-          type: pypi
-          name: packaging
-    cleanup:
-      - '*'
-
-  - name: glib
-    buildsystem: meson
-    builddir: true
-    config-opts:
-      - --buildtype=plain
-      - -Dtests=false
-    sources:
-      - type: archive
-        url: https://download.gnome.org/sources/glib/2.82/glib-2.82.0.tar.xz
-        sha256: f4c82ada51366bddace49d7ba54b33b4e4d6067afa3008e4847f41cb9b5c38d3
-        x-checker-data:
-          type: gnome
-          name: glib
-    cleanup:
-      - /bin
-
-  - name: glibmm
-    buildsystem: meson
-    builddir: true
-    config-opts:
-      - --buildtype=plain
-      - -Dbuild-examples=false
-    sources:
-      - type: archive
-        url: https://download.gnome.org/sources/glibmm/2.82/glibmm-2.82.0.tar.xz
-        sha256: 38684cff317273615c67b8fa9806f16299d51e5506d9b909bae15b589fa99cb6
-        x-checker-data:
-          type: gnome
-          name: glibmm
 
   - name: rnnoise
     config-opts:
@@ -529,7 +442,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/kotatogram/kotatogram-desktop.git
-        commit: fbb22ebd3e39dfa4a036fa79a7a3f78b86b1cea2
+        commit: e30c1857bf38c354467f4e6a2a37b1252b4e28e6
         disable-shallow-clone: true
         x-checker-data:
           type: git
