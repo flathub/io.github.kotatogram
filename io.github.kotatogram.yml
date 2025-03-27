@@ -158,11 +158,9 @@ modules:
         commit: 9fff46d7327c699ef970769d5c9fd0e44df08fc7
         tag: v28.2
         x-checker-data:
-          type: json
-          url: https://api.github.com/repos/protocolbuffers/protobuf/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag | sub("^[vV]"; "")
+          type: anitya
+          project-id: 3715
+          tag-template: v$version
           versions:
             <: '30'
     cleanup:
