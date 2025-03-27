@@ -164,7 +164,7 @@ modules:
           timestamp-query: .published_at
           version-query: $tag | sub("^[vV]"; "")
           versions:
-            <: '30.0'
+            <: '30'
     cleanup:
       - /bin
 
