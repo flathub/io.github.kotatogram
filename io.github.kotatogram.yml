@@ -302,7 +302,7 @@ modules:
           project-id: 7927
           url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtbase-everywhere-src-$version.tar.xz
           versions:
-            <: '6.8'
+            <=: 6.7.2
       - qtbase.json
     cleanup:
       - /bin
@@ -321,7 +321,7 @@ modules:
           project-id: 7927
           url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtshadertools-everywhere-src-$version.tar.xz
           versions:
-            <: '6.8'
+            <=: 6.7.2
     cleanup:
       - '*'
 
@@ -339,7 +339,7 @@ modules:
           project-id: 7927
           url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtdeclarative-everywhere-src-$version.tar.xz
           versions:
-            <: '6.8'
+            <=: 6.7.2
     cleanup:
       - /bin
 
@@ -357,7 +357,7 @@ modules:
           project-id: 7927
           url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtwayland-everywhere-src-$version.tar.xz
           versions:
-            <: '6.8'
+            <=: 6.7.2
       - qtwayland.json
     cleanup:
       - /bin
@@ -376,7 +376,7 @@ modules:
           project-id: 7927
           url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtimageformats-everywhere-src-$version.tar.xz
           versions:
-            <: '6.8'
+            <=: 6.7.2
 
   - name: qtsvg
     buildsystem: cmake-ninja
@@ -392,7 +392,7 @@ modules:
           project-id: 7927
           url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtsvg-everywhere-src-$version.tar.xz
           versions:
-            <: '6.8'
+            <=: 6.7.2
 
   - name: tg_owt
     buildsystem: cmake-ninja
