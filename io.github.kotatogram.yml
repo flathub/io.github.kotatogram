@@ -155,8 +155,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/protocolbuffers/protobuf.git
-        commit: 1be1c9d0ea6efa2a25bd7b76186844d1669be78a
-        tag: v29.4
+        commit: f5de0a0495faa63b4186fc767324f8b9a7bf4fc4
+        tag: v29.5
         x-checker-data:
           type: anitya
           project-id: 3715
