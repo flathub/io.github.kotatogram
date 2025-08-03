@@ -107,7 +107,6 @@ modules:
     builddir: true
     config-opts:
       - --buildtype=plain
-      - -Drootprefix=/app
     make-args:
       - systemd-detect-virt
     no-make-install: true
@@ -126,8 +125,8 @@ modules:
           url-query: '"https://github.com/systemd/systemd/archive/\($tag)/systemd-\($version).tar.gz"'
       - type: shell
         commands:
-          - 'sed -i "/systemd-detect-virt/,/link_with/ s/link_with : \\[libshared\\]/link_with
-            : [libshared_static, libsystemd_static, libbasic]/" meson.build'
+          - >-
+            sed -i "s/'link_with' : libshared/'link_with' : [libshared_static, libsystemd_static, libbasic_static]/" meson.build
 
   - name: boost
     buildsystem: simple
