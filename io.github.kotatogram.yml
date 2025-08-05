@@ -106,8 +106,8 @@ modules:
       - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
     sources:
       - type: archive
-        url: https://github.com/systemd/systemd/archive/v257.7/systemd-257.7.tar.gz
-        sha256: 70ecf759260549486045d065555d2f8a0ac0b8523d8f58227559fbd6d7523b08
+        url: https://github.com/systemd/systemd/archive/v257.8/systemd-257.8.tar.gz
+        sha256: f280278161446fe3838bedb970c7b3998043ad107f7627735a81483218c6f6f9
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
@@ -118,7 +118,8 @@ modules:
       - type: shell
         commands:
           - >-
-            sed -i "s/'link_with' : libshared/'link_with' : [libshared_static, libsystemd_static, libbasic_static]/" meson.build
+            sed -i "s/'link_with' : libshared/'link_with' : [libshared_static, libsystemd_static,
+            libbasic_static]/" meson.build
 
   - name: boost
     buildsystem: simple
@@ -228,8 +229,8 @@ modules:
       - -DWITH_EXAMPLES=OFF
     sources:
       - type: archive
-        url: https://github.com/strukturag/libheif/archive/v1.20.1/libheif-1.20.1.tar.gz
-        sha256: 9d3d601ec7a55281217aaa6c773cf6645757b062bc7e9680b664bbd8e481112d
+        url: https://github.com/strukturag/libheif/archive/v1.20.2/libheif-1.20.2.tar.gz
+        sha256: b70340395d84184bb8dfc833dd51c95ae049435f7ff9abc7b505a08b5ee2bd2a
         x-checker-data:
           type: json
           url: https://api.github.com/repos/strukturag/libheif/releases/latest
