@@ -186,8 +186,8 @@ modules:
       - -DENABLE_SDL=OFF
     sources:
       - type: archive
-        url: https://github.com/strukturag/libde265/archive/v1.0.17/libde265-1.0.17.tar.gz
-        sha256: 3a285024fa135fb962b4554e27ca54d7b0013d7084109a75cc9bef741ae57473
+        url: https://github.com/strukturag/libde265/archive/v1.0.18/libde265-1.0.18.tar.gz
+        sha256: 3fe36dd137ead3cb8ceb067165897c8898076537b563d53be4983ff6f35d773d
         x-checker-data:
           type: json
           url: https://api.github.com/repos/strukturag/libde265/releases/latest
