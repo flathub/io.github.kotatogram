@@ -207,8 +207,8 @@ modules:
       - -DAVIF_LIBYUV=OFF
     sources:
       - type: archive
-        url: https://github.com/AOMediaCodec/libavif/archive/v1.4.0/libavif-1.4.0.tar.gz
-        sha256: 713e2b998ca0bf5473fe4624afdbc7fa9f6e4799dd414020fe67d56f6997bf4e
+        url: https://github.com/AOMediaCodec/libavif/archive/v1.4.1/libavif-1.4.1.tar.gz
+        sha256: d4aea31a4becb3273ba7968221be2e48148ba05eb8a68d14e671963e17785648
         x-checker-data:
           type: json
           url: https://api.github.com/repos/AOMediaCodec/libavif/releases/latest
