@@ -16,7 +16,7 @@ finish-args:
   - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=com.canonical.indicator.application
   - --talk-name=org.ayatana.indicator.application
-  - --filesystem=xdg-run/pipewire-0
+  - --filesystem=xdg-run/pipewire-0:ro
   - --unset-env=QT_PLUGIN_PATH
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm16
