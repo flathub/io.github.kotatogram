@@ -106,8 +106,8 @@ modules:
       - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
     sources:
       - type: archive
-        url: https://github.com/systemd/systemd/archive/v261/systemd-261.tar.gz
-        sha256: f1c2e6a0d19ea5cae946386eb288432de12f3c6b7730cdb0d2a06f8ab8e3f8dc
+        url: https://github.com/systemd/systemd/archive/v261.1/systemd-261.1.tar.gz
+        sha256: f9b9da1103d1714703503d1746971ccbeeae945663ef3ede3b7348169b5df064
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
@@ -229,8 +229,8 @@ modules:
       - -DWITH_EXAMPLES=OFF
     sources:
       - type: archive
-        url: https://github.com/strukturag/libheif/archive/v1.23.0/libheif-1.23.0.tar.gz
-        sha256: 50ea4fbd1e19c7b8820271d6d0c73f2623fec5d659ce9fae57e48dbeb94fab9a
+        url: https://github.com/strukturag/libheif/archive/v1.23.1/libheif-1.23.1.tar.gz
+        sha256: 0b14d6bdf5680488e3aede354b1e11be1444b3fc4a30fcf2ae06bd6b601466be
         x-checker-data:
           type: json
           url: https://api.github.com/repos/strukturag/libheif/releases/latest
@@ -258,8 +258,8 @@ modules:
       - -DJPEGXL_ENABLE_SKCMS=OFF
     sources:
       - type: archive
-        url: https://github.com/libjxl/libjxl/archive/v0.11.2/libjxl-0.11.2.tar.gz
-        sha256: ab38928f7f6248e2a98cc184956021acb927b16a0dee71b4d260dc040a4320ea
+        url: https://github.com/libjxl/libjxl/archive/v0.12.0/libjxl-0.12.0.tar.gz
+        sha256: 03e9be69a30be4011f559da75328b6d7cea8ad921fabfbd551ce10bf45cdc992
         x-checker-data:
           type: json
           url: https://api.github.com/repos/libjxl/libjxl/releases/latest
