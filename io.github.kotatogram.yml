@@ -1,9 +1,8 @@
 id: io.github.kotatogram
-runtime: org.freedesktop.Platform
-runtime-version: '23.08'
-sdk: org.freedesktop.Sdk
-command: kotatogram-desktop
-rename-icon: kotatogram
+runtime: org.gnome.Platform
+runtime-version: '50'
+sdk: org.gnome.Sdk
+command: Kotatogram
 finish-args:
   - --share=ipc
   - --share=network
@@ -11,57 +10,60 @@ finish-args:
   - --socket=fallback-x11
   - --socket=pulseaudio
   - --device=all
+  - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.gnome.Mutter.IdleMonitor
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=com.canonical.indicator.application
   - --talk-name=org.ayatana.indicator.application
-  - --filesystem=xdg-run/pipewire-0
+  - --talk-name=org.sigxcpu.Feedback
   - --unset-env=QT_PLUGIN_PATH
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm16
-add-extensions:
-  org.freedesktop.Platform.ffmpeg-full:
-    directory: lib/ffmpeg
-    add-ld-path: .
-    version: '23.08'
-    autodownload: true
-    autodelete: false
-cleanup-commands:
-  - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
+  - org.freedesktop.Sdk.Extension.llvm22
 build-options:
-  cflags: -DNDEBUG
-  cxxflags: -DNDEBUG
-  append-path: /usr/lib/sdk/llvm16/bin
-  append-ld-library-path: /usr/lib/sdk/llvm16/lib
-cleanup:
-  - /doc
-  - /include
-  - /lib/cmake
-  - /lib/libexec
-  - /lib/metatypes
-  - /lib/pkgconfig
-  - /lib/systemd
-  - /mkspecs
-  - /modules
-  - /share/doc
-  - /share/man
-  - '*.prl'
-  - '*.la'
-  - '*.a'
+  append-path: /usr/lib/sdk/llvm22/bin
+  append-ld-library-path: /usr/lib/sdk/llvm22/lib
+  cflags: -g1
+  cxxflags: -g1
+  env:
+    CMAKE_BUILD_TYPE: None
+    CMAKE_PREFIX_PATH: /app
 modules:
-  - name: yasm
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
+  - name: pkg-config
+    buildsystem: simple
+    build-commands:
+      - install -d $FLATPAK_DEST/bin
+      - |
+        cat <<EOF > $FLATPAK_DEST/bin/pkg-config
+        #!/bin/sh
+        unset PKG_CONFIG_ALLOW_SYSTEM_LIBS
+        exec /usr/bin/pkg-config "\$@"
+        EOF
+      - chmod +x $FLATPAK_DEST/bin/pkg-config
+    cleanup:
+      - '*'
+
+  - name: implib
+    buildsystem: simple
+    build-commands:
+      - |
+        install -d $FLATPAK_DEST/lib
+        mkdir build
+        cd build
+        implib() {
+          LIBFILE=$(basename $1)
+          LIBNAME=$(basename $1 .so)
+          ../implib-gen.py -q $1
+          gcc $CFLAGS -c -o $LIBFILE.tramp.o $LIBFILE.tramp.S
+          gcc $CFLAGS -c -o $LIBFILE.init.o $LIBFILE.init.c
+          ar rcs $FLATPAK_DEST/lib/$LIBNAME.a $LIBFILE.tramp.o $LIBFILE.init.o
+        }
+        implib /usr/lib/$FLATPAK_ARCH-linux-gnu/libgtk-3.so
+        implib /usr/lib/$FLATPAK_ARCH-linux-gnu/libgdk-3.so
     sources:
-      - type: archive
-        url: https://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
-        sha256: 3dce6601b495f5b3d45b59f7d2492a340ee7e84b5beca17e48f862502bd5603f
-        x-checker-data:
-          type: anitya
-          project-id: 5286
-          url-template: https://www.tortall.net/projects/yasm/releases/yasm-$version.tar.gz
+      - type: git
+        url: https://github.com/yugr/Implib.so.git
+        commit: ecf7bb51a92a0fb16834c5b698570ab25f9f1d21
     cleanup:
       - '*'
 
@@ -103,18 +105,18 @@ modules:
       - systemd-detect-virt
     no-make-install: true
     post-install:
-      - install -D systemd-detect-virt "$FLATPAK_DEST/bin"
+      - install -Dt "$FLATPAK_DEST/bin" systemd-detect-virt
     sources:
-      - type: archive
-        url: https://github.com/systemd/systemd/archive/v261/systemd-261.tar.gz
-        sha256: f1c2e6a0d19ea5cae946386eb288432de12f3c6b7730cdb0d2a06f8ab8e3f8dc
+      - type: git
+        url: https://github.com/systemd/systemd.git
+        commit: de9dbc37ad4aa637e200ac02a0545095997055df
+        tag: v261
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
           tag-query: .tag_name
           timestamp-query: .published_at
           version-query: $tag | sub("^[vV]"; "")
-          url-query: '"https://github.com/systemd/systemd/archive/\($tag)/systemd-\($version).tar.gz"'
       - type: shell
         commands:
           - >-
@@ -124,277 +126,206 @@ modules:
   - name: boost
     buildsystem: simple
     build-commands:
-      - ./bootstrap.sh --prefix=${FLATPAK_DEST} --with-libraries=program_options,regex
-      - ./b2 variant=release link=shared runtime-link=shared cxxflags="$CXXFLAGS"
-        linkflags="$LDFLAGS" -j $FLATPAK_BUILDER_N_JOBS install
+      - ./bootstrap.sh --prefix=${FLATPAK_DEST} --with-libraries=regex
+      - ./b2 release link=static cflags="$CFLAGS" cxxflags="$CXXFLAGS" linkflags="$LDFLAGS"
+        -j$FLATPAK_BUILDER_N_JOBS install
     sources:
       - type: archive
-        url: https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.bz2
-        sha256: 49551aff3b22cbc5c5a9ed3dbc92f0e23ea50a0f7325b0d198b705e8ee3fc305
+        url: https://archives.boost.io/release/1.91.0/source/boost_1_91_0.tar.bz2
+        sha256: de5e6b0e4913395c6bdfa90537febd9028ea4c0735d2cdb0cd9b45d5f51264f5
         x-checker-data:
           type: anitya
           project-id: 6845
           stable-only: true
           url-template: https://archives.boost.io/release/$version/source/boost_${major}_${minor}_${patch}.tar.bz2
+    cleanup:
+      - '*'
+
+  - name: ada
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DBUILD_TESTING=OFF
+      - -DADA_TOOLS=OFF
+    sources:
+      - type: git
+        url: https://github.com/ada-url/ada.git
+        commit: 8d50724a7dea209a05234a445e28f97994b0a5f6
+        tag: v3.4.4
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/ada-url/ada/releases/latest
+          tag-query: .tag_name
+          timestamp-query: .published_at
+          version-query: $tag | sub("^[vV]"; "")
+    cleanup:
+      - '*'
 
   - name: protobuf
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DBUILD_SHARED_LIBS=ON
       - -Dprotobuf_BUILD_TESTS=OFF
     sources:
       - type: git
         url: https://github.com/protocolbuffers/protobuf.git
-        commit: e9e7dd6d624098aea6b41f220361cc5d1eadf59f
-        tag: v29.6
-        x-checker-data:
-          type: anitya
-          project-id: 3715
-          tag-template: v$version
-          versions:
-            <: '30'
-    cleanup:
-      - /bin
-
-  - name: highway
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DBUILD_SHARED_LIBS=ON
-      - -DBUILD_TESTING=OFF
-      - -DHWY_ENABLE_CONTRIB=OFF
-      - -DHWY_ENABLE_EXAMPLES=OFF
-    sources:
-      - type: archive
-        url: https://github.com/google/highway/archive/1.4.0/highway-1.4.0.tar.gz
-        sha256: e72241ac9524bb653ae52ced768b508045d4438726a303f10181a38f764a453c
+        commit: 35cd01f9fe9afbeea38cc7b979a3b6bfcde82c03
+        tag: v35.1
         x-checker-data:
           type: json
-          url: https://api.github.com/repos/google/highway/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag
-          url-query: '"https://github.com/google/highway/archive/\($tag)/highway-\($version).tar.gz"'
-
-  - name: libde265
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DENABLE_SDL=OFF
-    sources:
-      - type: archive
-        url: https://github.com/strukturag/libde265/archive/v1.1.1/libde265-1.1.1.tar.gz
-        sha256: 5b4fac677018e6074196e8f9889f3e4a5310e46afbf22a893f620d4e24d3510e
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/strukturag/libde265/releases/latest
+          url: https://api.github.com/repos/protocolbuffers/protobuf/releases/latest
           tag-query: .tag_name
           timestamp-query: .published_at
           version-query: $tag | sub("^[vV]"; "")
-          url-query: '"https://github.com/strukturag/libde265/archive/\($tag)/libde265-\($version).tar.gz"'
-    cleanup:
-      - /bin
-
-  - name: libavif
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DAVIF_CODEC_DAV1D=SYSTEM
-      - -DAVIF_LIBYUV=OFF
-    sources:
-      - type: archive
-        url: https://github.com/AOMediaCodec/libavif/archive/v1.4.2/libavif-1.4.2.tar.gz
-        sha256: 2b645287340ba5a631d268b551dc2d72bd73ac33335962dd36dcdb6d8366921d
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/AOMediaCodec/libavif/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag | sub("^[vV]"; "")
-          url-query: '"https://github.com/AOMediaCodec/libavif/archive/\($tag)/libavif-\($version).tar.gz"'
-
-  - name: libheif
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DWITH_X265=OFF
-      - -DWITH_AOM=OFF
-      - -DWITH_RAV1E=OFF
-      - -DWITH_DAV1D=OFF
-      - -DWITH_EXAMPLES=OFF
-    sources:
-      - type: archive
-        url: https://github.com/strukturag/libheif/archive/v1.23.0/libheif-1.23.0.tar.gz
-        sha256: 50ea4fbd1e19c7b8820271d6d0c73f2623fec5d659ce9fae57e48dbeb94fab9a
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/strukturag/libheif/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag | sub("^[vV]"; "")
-          url-query: '"https://github.com/strukturag/libheif/archive/\($tag)/libheif-\($version).tar.gz"'
-
-  - name: libjxl
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DBUILD_TESTING=OFF
-      - -DJPEGXL_ENABLE_DEVTOOLS=OFF
-      - -DJPEGXL_ENABLE_TOOLS=OFF
-      - -DJPEGXL_INSTALL_JPEGLI_LIBJPEG=ON
-      - -DJPEGXL_ENABLE_DOXYGEN=OFF
-      - -DJPEGXL_ENABLE_MANPAGES=OFF
-      - -DJPEGXL_ENABLE_BENCHMARK=OFF
-      - -DJPEGXL_ENABLE_EXAMPLES=OFF
-      - -DJPEGXL_ENABLE_JNI=OFF
-      - -DJPEGXL_ENABLE_SJPEG=OFF
-      - -DJPEGXL_ENABLE_OPENEXR=OFF
-      - -DJPEGXL_ENABLE_SKCMS=OFF
-    sources:
-      - type: archive
-        url: https://github.com/libjxl/libjxl/archive/v0.11.2/libjxl-0.11.2.tar.gz
-        sha256: ab38928f7f6248e2a98cc184956021acb927b16a0dee71b4d260dc040a4320ea
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/libjxl/libjxl/releases/latest
-          tag-query: .tag_name
-          timestamp-query: .published_at
-          version-query: $tag | sub("^[vV]"; "")
-          url-query: '"https://github.com/libjxl/libjxl/archive/\($tag)/libjxl-\($version).tar.gz"'
-
-  - name: rnnoise
-    config-opts:
-      - --disable-static
-      - --disable-examples
-      - --disable-doc
-    sources:
-      - type: git
-        url: https://gitlab.xiph.org/xiph/rnnoise.git
-        commit: 7f449bf8bd3b933891d12c30112268c4090e4d59
-
-  - name: qtbase
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-      - -DINSTALL_ARCHDATADIR=/app/lib
-      - -DINPUT_openssl=linked
-    sources:
-      - type: archive
-        url: https://download.qt.io/archive/qt/6.7/6.7.2/submodules/qtbase-everywhere-src-6.7.2.tar.xz
-        sha256: c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
-        x-checker-data:
-          type: anitya
-          project-id: 7927
-          url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtbase-everywhere-src-$version.tar.xz
-          versions:
-            <=: 6.7.2
-      - qtbase.json
-    cleanup:
-      - /bin
-
-  - name: qtshadertools
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-    sources:
-      - type: archive
-        url: https://download.qt.io/archive/qt/6.7/6.7.2/submodules/qtshadertools-everywhere-src-6.7.2.tar.xz
-        sha256: edfa34c0ac8c00fcaa949df1d8e7a77d89dadd6386e683ce6c3e3b117e2f7cc1
-        x-checker-data:
-          type: anitya
-          project-id: 7927
-          url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtshadertools-everywhere-src-$version.tar.xz
-          versions:
-            <=: 6.7.2
     cleanup:
       - '*'
 
-  - name: qtdeclarative
+  - name: mozjpeg
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DCMAKE_BUILD_TYPE=None
+      - -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+      - -DCMAKE_INSTALL_DEFAULT_LIBDIR=lib
+      - -DENABLE_SHARED=OFF
+      - -DPNG_SUPPORTED=OFF
     sources:
-      - type: archive
-        url: https://download.qt.io/archive/qt/6.7/6.7.2/submodules/qtdeclarative-everywhere-src-6.7.2.tar.xz
-        sha256: 4c29cba1af8c42d425d8eb6e01bad24cb80f4b983d71eef566a0542dfdb9b999
+      - type: git
+        url: https://github.com/mozilla/mozjpeg.git
+        commit: 6c9f0897afa1c2738d7222a0a9ab49e8b536a267
+        tag: v4.1.5
         x-checker-data:
-          type: anitya
-          project-id: 7927
-          url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtdeclarative-everywhere-src-$version.tar.xz
-          versions:
-            <=: 6.7.2
+          type: git
+          tag-pattern: ^v([\\d.]+)$
     cleanup:
-      - /bin
+      - '*'
 
-  - name: qtwayland
-    buildsystem: cmake-ninja
-    builddir: true
+  - name: openh264
+    buildsystem: meson
     config-opts:
-      - -DCMAKE_BUILD_TYPE=None
+      - --buildtype=plain
+      - --default-library=static
+      - -Dtests=disabled
     sources:
-      - type: archive
-        url: https://download.qt.io/archive/qt/6.7/6.7.2/submodules/qtwayland-everywhere-src-6.7.2.tar.xz
-        sha256: a2a057e1dd644bd44abb9990fecc194b2e25c2e0f39e81aa9fee4c1e5e2a8a5b
+      - type: git
+        url: https://github.com/cisco/openh264.git
+        commit: 652bdb7719f30b52b08e506645a7322ff1b2cc6f
+        tag: v2.6.0
         x-checker-data:
-          type: anitya
-          project-id: 7927
-          url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtwayland-everywhere-src-$version.tar.xz
-          versions:
-            <=: 6.7.2
-      - qtwayland.json
+          type: json
+          url: https://api.github.com/repos/cisco/openh264/releases/latest
+          tag-query: .tag_name
+          timestamp-query: .published_at
+          version-query: $tag | sub("^[vV]"; "")
     cleanup:
-      - /bin
+      - '*'
 
-  - name: qtimageformats
+  - name: minizip
+    subdir: contrib/minizip
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: git
+        url: https://github.com/madler/zlib.git
+        commit: e3dc0a85b7032e98380dec011bc8f2c2ee0d8fca
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\\d.]+)$
+          versions:
+            '>': 1.3.2
+      - type: shell
+        commands:
+          - cd contrib/minizip && autoreconf -fi
+    cleanup:
+      - '*'
+
+  - name: rnnoise
+    config-opts:
+      - --disable-shared
+      - --disable-examples
+      - --disable-doc
+    sources:
+      - type: archive
+        url: https://github.com/xiph/rnnoise/releases/download/v0.2/rnnoise-0.2.tar.gz
+        sha256: 90fce4b00b9ff24c08dbfe31b82ffd43bae383d85c5535676d28b0a2b11c0d37
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/xiph/rnnoise/releases/latest
+          tag-query: .tag_name
+          timestamp-query: .published_at
+          version-query: $tag | sub("^[vV]"; "")
+          url-query: '"https://github.com/xiph/rnnoise/releases/download/\($tag)/rnnoise-\($version).tar.gz"'
+      - type: shell
+        commands:
+          - sed -i 's/os_support.h/common.h/g;s/OPUS_CLEAR/RNN_CLEAR/g' src/vec{,_neon}.h
+    cleanup:
+      - '*'
+
+  - name: qt
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DCMAKE_BUILD_TYPE=None
+      - -DBUILD_SHARED_LIBS=OFF
+      - -DBUILD_WITH_PCH=OFF
+      - -DQT_BUILD_SUBMODULES=qtbase;qtdeclarative;qtimageformats;qtshadertools;qtsvg;qtwayland
+      - -DQT_QPA_PLATFORMS=wayland;xcb
+      - -DFEATURE_glibc_fortify_source=OFF
+      - -DINPUT_openssl=linked
     sources:
       - type: archive
-        url: https://download.qt.io/archive/qt/6.7/6.7.2/submodules/qtimageformats-everywhere-src-6.7.2.tar.xz
-        sha256: e1a1d8785fae67d16ad0a443b01d5f32663a6b68d275f1806ebab257485ce5d6
+        url: https://download.qt.io/archive/qt/6.11/6.11.1/single/qt-everywhere-src-6.11.1.tar.xz
+        sha256: 252acef8c5ae68074d91cadba2ee4a83465051bbb970dd26e8f0daa0f3904e03
         x-checker-data:
-          type: anitya
-          project-id: 7927
-          url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtimageformats-everywhere-src-$version.tar.xz
-          versions:
-            <=: 6.7.2
-
-  - name: qtsvg
-    buildsystem: cmake-ninja
-    builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-    sources:
-      - type: archive
-        url: https://download.qt.io/archive/qt/6.7/6.7.2/submodules/qtsvg-everywhere-src-6.7.2.tar.xz
-        sha256: fb0d1286a35be3583fee34aeb5843c94719e07193bdf1d4d8b0dc14009caef01
+          type: json
+          parent-id: kotatogram-desktop-git-0
+          tag-data-url: >-
+            "https://github.com/kotatogram/kotatogram-desktop/raw/\($parent.new.commit//$parent.current.commit)/snap/snapcraft.yaml"
+          tag-query: >-
+            .parts.qt."source-tag"
+          version-query: >-
+            $tag | sub("^[vV]"; "")
+          timestamp-data-url: >-
+            "https://api.github.com/repos/qt/qt5/commits/\($tag)"
+          timestamp-query: >-
+            .commit.committer.date
+          url-query: >-
+            $version | split(".") as $v |
+            "https://download.qt.io/archive/qt/\($v[0]).\($v[1])/\($version)/single/qt-everywhere-src-\($version).tar.xz"
+      - type: git
+        url: https://github.com/desktop-app/patches.git
+        commit: e481284d692dbd556ff1f40006ae774d10a16b9e
+        dest: patches
         x-checker-data:
-          type: anitya
-          project-id: 7927
-          url-template: https://download.qt.io/archive/qt/$major.$minor/$version/submodules/qtsvg-everywhere-src-$version.tar.xz
-          versions:
-            <=: 6.7.2
+          type: json
+          parent-id: kotatogram-desktop-git-0
+          commit-data-url: >-
+            "https://github.com/kotatogram/kotatogram-desktop/raw/\($parent.new.commit//$parent.current.commit)/snap/snapcraft.yaml"
+          commit-query: >-
+            .parts.patches."source-commit"
+          version-data-url: >-
+            "https://api.github.com/repos/desktop-app/patches/commits/\($commit)"
+          version-query: >-
+            "desktop-app/patches@\(.sha[0:7])"
+          timestamp-data-url: >-
+            "https://api.github.com/repos/desktop-app/patches/commits/\($commit)"
+          timestamp-query: >-
+            .commit.committer.date
+      - type: shell
+        commands:
+          - |
+            set -euo pipefail
+            QT="$(grep 'set(QT_REPO_MODULE_VERSION' qtbase/.cmake.conf | sed -r 's/.*"(.*)".*/\1/')"
+            find $PWD/patches/qtbase_${QT} -type f -print0 | sort -z | xargs -r0 git -C qtbase apply
+            find $PWD/patches/qtwayland_${QT} -type f -print0 | sort -z | xargs -r0 git -C qtwayland apply
+    cleanup:
+      - '*'
 
   - name: tg_owt
     buildsystem: cmake-ninja
     builddir: true
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
     sources:
       - type: git
         url: https://github.com/desktop-app/tg_owt.git
-        commit: 3bb3d757681e6cc5135aec6529a753dc3dcdcfb9
+        commit: 26068e29bfa8d74a9dc9c8f7f94172fafbc262b8
         x-checker-data:
           type: json
           parent-id: kotatogram-desktop-git-0
@@ -413,29 +344,53 @@ modules:
     cleanup:
       - '*'
 
+  - name: tde2e
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DTD_E2E_ONLY=ON
+    sources:
+      - type: git
+        url: https://github.com/tdlib/td.git
+        commit: 51743dfd01dff6179e2d8f7095729caa4e2222e9
+        x-checker-data:
+          type: json
+          parent-id: kotatogram-desktop-git-0
+          commit-data-url: >-
+            "https://github.com/kotatogram/kotatogram-desktop/raw/\($parent.new.commit//$parent.current.commit)/snap/snapcraft.yaml"
+          commit-query: >-
+            .parts.tde2e."source-commit"
+          version-data-url: >-
+            "https://api.github.com/repos/tdlib/td/commits/\($commit)"
+          version-query: >-
+            "tdlib/td@\(.sha[0:7])"
+          timestamp-data-url: >-
+            "https://api.github.com/repos/tdlib/td/commits/\($commit)"
+          timestamp-query: >-
+            .commit.committer.date
+    cleanup:
+      - '*'
+
   - name: kotatogram-desktop
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      arch:
-        aarch64:
-          cflags: -g1
-          cxxflags: -g1
+      cflags: -fpch-preprocess
+      cxxflags: -fpch-preprocess
+      env:
+        CCACHE_SLOPPINESS: pch_defines,time_macros
     config-opts:
-      - -DCMAKE_BUILD_TYPE=None
       - -DTDESKTOP_API_ID=1096745
       - -DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b
-      - -DDESKTOP_APP_USE_PACKAGED_LAZY=ON
     sources:
       - type: git
         url: https://github.com/kotatogram/kotatogram-desktop.git
-        commit: 499ae0fbb463db09b982cbd5577d273466e224a6
+        commit: 7263a1b53c9e6b45a416532644fff7a4c7f90d54
         disable-shallow-clone: true
         x-checker-data:
           type: git
           tag-pattern: ^k([\\d.]+)$
           versions:
             '>': 1.4.9
-      - type: shell
-        commands:
-          - sed -i '/-Werror/d' Telegram/ThirdParty/dispatch/cmake/modules/DispatchCompilerWarnings.cmake
+    cleanup:
+      - /share/icons/hicolor/512x512@2
