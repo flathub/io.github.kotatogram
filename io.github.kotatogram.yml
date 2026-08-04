@@ -385,6 +385,8 @@ modules:
     config-opts:
       - -DTDESKTOP_API_ID=1096745
       - -DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b
+    post-install:
+      - ccache --evict-older-than 1d
     sources:
       - type: git
         url: https://github.com/kotatogram/kotatogram-desktop.git
