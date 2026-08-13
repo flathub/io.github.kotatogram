@@ -77,8 +77,8 @@ modules:
         "Jinja2" --no-build-isolation
     sources:
       - type: file
-        url: https://files.pythonhosted.org/packages/69/59/b6fc2188dfc7ea4f936cd12b49d707f66a1cb7a1d2c16172963534db741b/flit_core-3.12.0.tar.gz
-        sha256: 18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2
+        url: https://files.pythonhosted.org/packages/46/ef/34533186e76c526d9ec17a1ad9a10c7354cbfb20f51583cc36dfe4bdccd0/flit_core-4.0.2.tar.gz
+        sha256: b6929defd93884b584d7c87829e0e7b5c26ed6be17b0b873979019314aa841c8
         x-checker-data:
           type: pypi
           name: flit-core
@@ -110,8 +110,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/systemd/systemd.git
-        commit: de9dbc37ad4aa637e200ac02a0545095997055df
-        tag: v261
+        commit: 4925d9f07fc697efccd98a93046ff535b8832445
+        tag: v261.2
         x-checker-data:
           type: json
           url: https://api.github.com/repos/systemd/systemd/releases/latest
@@ -132,8 +132,8 @@ modules:
         -j$FLATPAK_BUILDER_N_JOBS install
     sources:
       - type: archive
-        url: https://archives.boost.io/release/1.91.0/source/boost_1_91_0.tar.bz2
-        sha256: de5e6b0e4913395c6bdfa90537febd9028ea4c0735d2cdb0cd9b45d5f51264f5
+        url: https://archives.boost.io/release/1.92.0/source/boost_1_92_0.tar.bz2
+        sha256: 5c1d40cb8e19adbf740a4ec2da35b3e58f3f5804b1dce44deb53df72193cbc6c
         x-checker-data:
           type: anitya
           project-id: 6845
@@ -151,8 +151,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/ada-url/ada.git
-        commit: 8d50724a7dea209a05234a445e28f97994b0a5f6
-        tag: v3.4.4
+        commit: b12a893a45809da8103bb4f1e2f6f5ee13f9100b
+        tag: v4.0.0
         x-checker-data:
           type: json
           url: https://api.github.com/repos/ada-url/ada/releases/latest
@@ -264,6 +264,8 @@ modules:
   - name: qt
     buildsystem: cmake-ninja
     builddir: true
+    build-options:
+      strip: true
     config-opts:
       - -DBUILD_SHARED_LIBS=OFF
       - -DBUILD_WITH_PCH=OFF
@@ -383,6 +385,8 @@ modules:
     config-opts:
       - -DTDESKTOP_API_ID=1096745
       - -DTDESKTOP_API_HASH=d91b15bd9ad1d7cdda32345a9361586b
+    post-install:
+      - ccache --evict-older-than 1d
     sources:
       - type: git
         url: https://github.com/kotatogram/kotatogram-desktop.git
