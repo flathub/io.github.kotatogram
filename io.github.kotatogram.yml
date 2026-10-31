@@ -396,9 +396,9 @@ modules:
         dest: patches
         x-checker-data:
           type: json
-          parent-id: tdesktop-git-0
+          parent-id: kotatogram-desktop-git-0
           commit-data-url: >-
-            "https://github.com/telegramdesktop/tdesktop/raw/\($parent.new.tag//$parent.current.tag)/snap/snapcraft.yaml"
+            "https://github.com/kotatogram/kotatogram-desktop/raw/\($parent.new.tag//$parent.current.tag)/snap/snapcraft.yaml"
           commit-query: >-
             .parts.patches."source-commit"
           version-data-url: >-
