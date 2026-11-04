@@ -181,7 +181,7 @@ modules:
         tag: v4.1.5
         x-checker-data:
           type: git
-          tag-pattern: ^v([\\d.]+)$
+          tag-pattern: ^v([\d.]+)$
     cleanup:
       - '*'
 
@@ -215,7 +215,7 @@ modules:
         commit: e3dc0a85b7032e98380dec011bc8f2c2ee0d8fca
         x-checker-data:
           type: git
-          tag-pattern: ^v([\\d.]+)$
+          tag-pattern: ^v([\d.]+)$
           versions:
             '>': 1.3.2
       - type: shell
@@ -398,7 +398,7 @@ modules:
           type: json
           parent-id: kotatogram-desktop-git-0
           commit-data-url: >-
-            "https://github.com/kotatogram/kotatogram-desktop/raw/\($parent.new.tag//$parent.current.tag)/snap/snapcraft.yaml"
+            "https://github.com/kotatogram/kotatogram-desktop/raw/\($parent.new.commit//$parent.current.commit)/snap/snapcraft.yaml"
           commit-query: >-
             .parts.patches."source-commit"
           version-data-url: >-
@@ -436,7 +436,7 @@ modules:
         disable-shallow-clone: true
         x-checker-data:
           type: git
-          tag-pattern: ^k([\\d.]+)$
+          tag-pattern: ^k([\d.]+)$
           versions:
             '>': 1.4.9
     cleanup:
