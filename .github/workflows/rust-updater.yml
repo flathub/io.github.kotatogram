@@ -19,7 +19,7 @@ jobs:
           query='.modules[] | select(.name == "tdesktop_rust").sources[] | select(tag == "!!map" and has("x-cargo-lock"))
             | .url as $url | .commit as $commit
             | .["x-cargo-lock"][] | $url + " " + $commit + " " + .'
-          yq "$query" org.telegram.desktop.yml > "$work/locks"
+          yq "$query" io.github.kotatogram.yml > "$work/locks"
           n=0
           while read -r url commit lock; do
             n=$((n + 1))
